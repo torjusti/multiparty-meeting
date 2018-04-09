@@ -139,7 +139,7 @@ class Room extends EventEmitter
 						}
 						else
 						{
-							consumer.setPreferredProfile('medium');
+							this._lowerProfile(consumer);
 						}
 					}
 				}
@@ -157,7 +157,7 @@ class Room extends EventEmitter
 						if (consumer.kind !== 'video')
 							continue;
 
-						consumer.setPreferredProfile('medium');
+						this._lowerProfile(consumer);
 					}
 				}
 			}
@@ -418,7 +418,7 @@ class Room extends EventEmitter
 		// If video, initially make it 'low' profile unless this is for the current
 		// active speaker.
 		if (consumer.kind === 'video' && consumer.peer !== this._currentActiveSpeaker)
-			consumer.setPreferredProfile('medium');
+			this._lowerProfile(consumer);
 	}
 
 	_handleMediasoupClientRequest(protooPeer, request, accept, reject)
@@ -562,6 +562,21 @@ class Room extends EventEmitter
 			Math.round(previousMaxBitrate / 1000),
 			Math.round(newMaxBitrate / 1000));
 	}
+
+	_lowerProfile(consumer)
+	{
+		const numPeers = this._mediaRoom.peers.length;
+
+		if (numPeers <= 6)
+		{
+			consumer.setPreferredProfile('medium');
+		}
+		else
+		{
+			consumer.setPreferredProfile('low');
+		}
+	}
+
 }
 
 module.exports = Room;
