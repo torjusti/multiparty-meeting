@@ -17,6 +17,7 @@ const ROOM_OPTIONS =
 		tcp       : true,
 		preferUdp : true
 	},
+	turnServers : [ { urls: 'stun:ltc.turn.geant.org' } ]
 };
 
 const VIDEO_CONSTRAINS =
