@@ -3,6 +3,9 @@ node_modules/
 yarn.lock
 package-lock.json
 
+/app/config.*
+!/app/config.example.js
+
 /server/config.*
 !/server/config.example.js
 /server/public/

@@ -46,6 +46,14 @@ export const setMediaCapabilities = ({ canSendMic, canSendWebcam }) =>
 	};
 };
 
+export const setScreenCapabilities = ({	canShareScreen, needExtension }) =>
+{
+	return {
+		type    : 'SET_SCREEN_CAPABILITIES',
+		payload : { canShareScreen, needExtension }
+	};
+};
+
 export const setCanChangeWebcam = (flag) =>
 {
 	return {
@@ -130,6 +138,14 @@ export const setWebcamInProgress = (flag) =>
 {
 	return {
 		type    : 'SET_WEBCAM_IN_PROGRESS',
+		payload : { flag }
+	};
+};
+
+export const setScreenShareInProgress = (flag) =>
+{
+	return {
+		type    : 'SET_SCREEN_SHARE_IN_PROGRESS',
 		payload : { flag }
 	};
 };
