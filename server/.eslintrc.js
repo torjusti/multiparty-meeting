@@ -163,6 +163,7 @@ module.exports =
 		'spaced-comment': [ 2, 'always' ],
 		'strict': 0,
 		'valid-typeof': 2,
-		'yoda': 2
+		'yoda': 2,
+		'no-trailing-spaces': 2
 	}
 };
