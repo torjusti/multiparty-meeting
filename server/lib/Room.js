@@ -139,7 +139,7 @@ class Room extends EventEmitter
 						}
 						else
 						{
-							consumer.setPreferredProfile('low');
+							consumer.setPreferredProfile('medium');
 						}
 					}
 				}
@@ -157,7 +157,7 @@ class Room extends EventEmitter
 						if (consumer.kind !== 'video')
 							continue;
 
-						consumer.setPreferredProfile('low');
+						consumer.setPreferredProfile('medium');
 					}
 				}
 			}
@@ -418,7 +418,7 @@ class Room extends EventEmitter
 		// If video, initially make it 'low' profile unless this is for the current
 		// active speaker.
 		if (consumer.kind === 'video' && consumer.peer !== this._currentActiveSpeaker)
-			consumer.setPreferredProfile('low');
+			consumer.setPreferredProfile('medium');
 	}
 
 	_handleMediasoupClientRequest(protooPeer, request, accept, reject)
