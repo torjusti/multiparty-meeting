@@ -1,5 +1,8 @@
 node_modules/
 
+yarn.lock
+package-lock.json
+
 /server/config.*
 !/server/config.example.js
 /server/public/
