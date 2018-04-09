@@ -14,8 +14,9 @@ const ROOM_OPTIONS =
 	requestTimeout   : 10000,
 	transportOptions :
 	{
-		tcp : true
-	}
+		tcp       : true,
+		preferUdp : true
+	},
 };
 
 const VIDEO_CONSTRAINS =
