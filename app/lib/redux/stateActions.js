@@ -313,3 +313,11 @@ export const dropMessages = () =>
 		type : 'DROP_MESSAGES'
 	};
 };
+
+export const updateIceServers = (iceServers) =>
+{
+	return {
+		type    : 'UPDATE_ICE_SERVERS',
+		payload : { iceServers }
+	};
+};

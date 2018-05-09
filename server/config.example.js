@@ -58,5 +58,7 @@ module.exports =
 		],
 		// mediasoup per Peer max sending bitrate (in bps).
 		maxBitrate : 500000
-	}
+	},
+	// update API-SERVER and API-KEY
+	iceServersRestApi : 'https://API-SERVER/turn?api_key=API-KEY&uri_schema=stun%2Cturn&transport=udp&ip_ver=ipv4&servercount=1'
 };

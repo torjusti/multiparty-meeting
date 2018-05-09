@@ -179,6 +179,23 @@ export default class RoomClient
 			});
 	}
 
+	getIceServers()
+	{
+		logger.debug('getIceServers()');
+
+		return this._protoo.send('ice-servers', {})
+			.catch((error) =>
+			{
+				logger.error('getIceServers() | failed: %o', error);
+
+				this._dispatch(requestActions.notify(
+					{
+						type : 'error',
+						text : `Could not get iceServer history: ${error}`
+					}));
+			});
+	}
+
 	muteMic()
 	{
 		logger.debug('muteMic()');
@@ -792,6 +809,22 @@ export default class RoomClient
 					break;
 				}
 
+				case 'ice-servers-receive':
+				{
+					accept();
+
+					const { iceServers } = request.data;
+										
+					if (iceServers)
+					{					
+						logger.debug('Got ice Servers: %o', iceServers);
+						this._dispatch(
+							stateActions.updateIceServers(iceServers));					
+					}
+
+					break;
+				}
+
 				default:
 				{
 					logger.error('unknown protoo method "%s"', request.method);
@@ -929,6 +962,8 @@ export default class RoomClient
 				this._dispatch(stateActions.removeAllNotifications());
 
 				this.getChatHistory();
+
+				this.getIceServers();
 
 				this._dispatch(requestActions.notify(
 					{

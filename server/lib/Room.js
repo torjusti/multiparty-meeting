@@ -2,6 +2,7 @@
 
 const EventEmitter = require('events').EventEmitter;
 const protooServer = require('protoo-server');
+const fetch = require('node-fetch');
 const Logger = require('./Logger');
 const config = require('../config');
 
@@ -27,6 +28,8 @@ class Room extends EventEmitter
 		this._closed = false;
 
 		this._chatHistory = [];
+
+		this.iceServersRestApi=config.iceServersRestApi;
 
 		try
 		{
@@ -273,12 +276,41 @@ class Room extends EventEmitter
 					this._protooRoom.spread(
 						'raisehand-message',
 						{
-							peerName    : protooPeer.id,
+							peerName       : protooPeer.id,
 							raiseHandState : raiseHandState
 						},
 						[ protooPeer ]);
 
 					break;
+				}
+
+				case 'ice-servers':
+				{
+					accept();
+					
+					const restApiUrl = `${this.iceServersRestApi}&ip=${protooPeer._transport._socket.remoteAddress}`;
+
+					logger.debug('RestApiUrl: %s', restApiUrl);
+					fetch(restApiUrl)
+						.then((response) =>
+						{
+							response.json()
+								.then((data) =>
+								{
+									protooPeer.send(
+										'ice-servers-receive',
+										{ iceServers: data }
+									);
+									logger.debug('ICE Servers: %o', data);
+								});
+						})
+						.catch((error) =>
+						{
+							logger.error('Error fetchin iceServer list | failed: %o', error);
+						});
+
+					break;
+
 				}
 
 				default:

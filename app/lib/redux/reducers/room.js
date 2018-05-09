@@ -4,7 +4,8 @@ const initialState =
 	state             : 'new', // new/connecting/connected/disconnected/closed,
 	activeSpeakerName : null,
 	peerHeight        : 300,
-	peerWidth         : 400
+	peerWidth         : 400,
+	turnServers       : null
 };
 
 const room = (state = initialState, action) =>
@@ -40,6 +41,13 @@ const room = (state = initialState, action) =>
 			const { peerWidth, peerHeight } = action.payload;
 
 			return { ...state, peerWidth: peerWidth, peerHeight: peerHeight };
+		}
+		
+		case 'UPDATE_ICE_SERVERS':
+		{
+			const { iceServers } = action.payload;
+
+			return { ...state, turnServers: iceServers };
 		}
 
 		default:
