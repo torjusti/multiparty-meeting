@@ -36,7 +36,7 @@ class Me extends React.Component
 			onUnmuteMic,
 			onEnableWebcam,
 			onDisableWebcam,
-			onChangeWebcam
+			onChangeWebcam			
 		} = this.props;
 
 		let micState;
@@ -71,9 +71,9 @@ class Me extends React.Component
 			!webcamProducer.locallyPaused &&
 			!webcamProducer.remotelyPaused
 		);
-
+	
 		let tip;
-
+		
 		if (!me.displayNameSet)
 			tip = 'Click on your name to change it';
 
@@ -124,6 +124,7 @@ class Me extends React.Component
 					audioCodec={micProducer ? micProducer.codec : null}
 					videoCodec={webcamProducer ? webcamProducer.codec : null}
 					onChangeDisplayName={(displayName) => onChangeDisplayName(displayName)}
+					screenVisible={false}
 				/>
 
 				{this._tooltip ?
