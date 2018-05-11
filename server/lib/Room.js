@@ -29,7 +29,9 @@ class Room extends EventEmitter
 
 		this._chatHistory = [];
 
-		this.iceServersRestApi=config.iceServersRestApi;
+		this.iceServersRestApi = config.iceServersRestApi;
+
+		this.renewDelta = config.renewDelta;
 
 		try
 		{
@@ -299,7 +301,7 @@ class Room extends EventEmitter
 								{
 									protooPeer.send(
 										'ice-servers-receive',
-										{ iceServers: data }
+										{ iceServers: data, renewDelta: this.renewDelta }
 									);
 									logger.debug('ICE Servers: %o', data);
 								});

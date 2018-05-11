@@ -813,13 +813,29 @@ export default class RoomClient
 				{
 					accept();
 
-					const { iceServers } = request.data;
-										
+					const { iceServers, renewDelta } = request.data;
+					let timer;
+
 					if (iceServers)
 					{					
 						logger.debug('Got ice Servers: %o', iceServers);
-						this._dispatch(
-							stateActions.updateIceServers(iceServers));					
+						this._dispatch(							
+							stateActions.updateIceServers(iceServers));
+						if (iceServers.username)
+						{
+							logger.debug('Got ice Servers: %s', iceServers.username);
+							const expiry = iceServers.username.split(':', 1)[0];
+							const now = Math.round(new Date().getTime()/1000);
+
+							// 60 sec minus expiry 
+							timer = expiry - now;
+							logger.debug('Next IceServer lookup timer: %s-%s=%s Renew Delta: %s', expiry, now, timer, renewDelta);
+							setTimeout(() => 
+							{
+								this.getIceServers();
+							}, (10 * timer) - renewDelta);	
+						}
+		
 					}
 
 					break;
@@ -964,7 +980,7 @@ export default class RoomClient
 				this.getChatHistory();
 
 				this.getIceServers();
-
+			
 				this._dispatch(requestActions.notify(
 					{
 						text    : 'You are in the room',
