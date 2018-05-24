@@ -62,6 +62,6 @@ module.exports =
 	// update API-SERVER and API-KEY
 	iceServersRestApi : 'https://API-SERVER/turn?api_key=API-KEY&uri_schema=stun%2Cturn&transport=udp&ip_ver=ipv4&servercount=1',
 	// renew credential 1 min before exiry
-	renewDelta : 60000
+	renewDelta        : 60000
 
 };
