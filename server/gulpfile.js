@@ -15,20 +15,26 @@ const gulp = require('gulp');
 const plumber = require('gulp-plumber');
 const eslint = require('gulp-eslint');
 
+const src =
+[
+	'gulpfile.js',
+	'server.js',
+	'config.example.js',
+	'lib/**/*.js'
+];
+
 gulp.task('lint', () =>
 {
-	const src =
-	[
-		'gulpfile.js',
-		'server.js',
-		'config.example.js',
-		'lib/**/*.js'
-	];
 
 	return gulp.src(src)
 		.pipe(plumber())
 		.pipe(eslint())
 		.pipe(eslint.format());
+});
+
+gulp.task('watch', () =>
+{
+	gulp.watch(src, gulp.series('lint'));
 });
 
 gulp.task('default', gulp.series('lint'));
