@@ -8,10 +8,10 @@ import * as appPropTypes from './appPropTypes';
 import * as requestActions from '../redux/requestActions';
 import { Appear } from './transitions';
 import Me from './Me';
-import Peers from './Peers';
+//	import Peers from './Peers';
 import Notifications from './Notifications';
 import ChatWidget from './ChatWidget';
-
+import OnePlusN from './OnePlusN';
 class Room extends React.Component
 {
 	render()
@@ -28,7 +28,8 @@ class Room extends React.Component
 			onUnShareScreen,
 			onNeedExtension,
 			onToggleHand,
-			onLeaveMeeting
+			onLeaveMeeting,
+			debugInfo
 		} = this.props;
 
 		let screenState;
@@ -60,44 +61,48 @@ class Room extends React.Component
 				<div data-component='Room'>
 					<Notifications />
 					<ChatWidget />
-
-					<div className='state' data-tip='Server status'>
-						<div className={classnames('icon', room.state)} />
-						<p className={classnames('text', room.state)}>{room.state}</p>
-					</div>
-
-					<div className='room-link-wrapper'>
-						<div className='room-link'>
-							<ClipboardButton
-								component='a'
-								className='link'
-								button-href={room.url}
-								button-target='_blank'
-								data-tip='Click to copy room link'
-								data-clipboard-text={room.url}
-								onSuccess={onRoomLinkCopy}
-								onClick={(event) =>
-								{
-									// If this is a 'Open in new window/tab' don't prevent
-									// click default action.
-									if (
-										event.ctrlKey || event.shiftKey || event.metaKey ||
-										// Middle click (IE > 9 and everyone else).
-										(event.button && event.button === 1)
-									)
-									{
-										return;
-									}
-
-									event.preventDefault();
-								}}
-							>
-								invitation link
-							</ClipboardButton>
+					{debugInfo?
+						<div className='state' data-tip='Server status'>
+							<div className={classnames('icon', room.state)} />
+							<p className={classnames('text', room.state)}>{room.state}</p>
 						</div>
-					</div>
+						: null
+					}
+					{debugInfo?
+						<div className='room-link-wrapper'>
+							<div className='room-link'>
+								<ClipboardButton
+									component='a'
+									className='link'
+									button-href={room.url}
+									button-target='_blank'
+									data-tip='Click to copy room link'
+									data-clipboard-text={room.url}
+									onSuccess={onRoomLinkCopy}
+									onClick={(event) =>
+									{
+										// If this is a 'Open in new window/tab' don't prevent
+										// click default action.
+										if (
+											event.ctrlKey || event.shiftKey || event.metaKey ||
+											// Middle click (IE > 9 and everyone else).
+											(event.button && event.button === 1)
+										)
+										{
+											return;
+										}
 
-					<Peers />
+										event.preventDefault();
+									}}
+								>
+									invitation link
+								</ClipboardButton>
+							</div>
+						</div>
+						:null
+					}
+					<OnePlusN />
+					{/*	<Peers />	*/}
 
 					<div
 						className={classnames('me-container', {
@@ -107,7 +112,7 @@ class Room extends React.Component
 						<Me />
 					</div>
 
-					<div className='sidebar'>
+					<div className='topbar'>
 						<div
 							className={classnames('button', 'screen', screenState)}
 							data-tip={screenTip}
@@ -138,26 +143,36 @@ class Room extends React.Component
 								}
 							}}
 						/>
+						{debugInfo?						
 
+							<div
+								className={classnames('button', 'audio-only', {
+									on       : me.audioOnly,
+									disabled : me.audioOnlyInProgress
+								})}
+								data-tip='Toggle audio only mode'
+								data-type='dark'
+								onClick={() => onSetAudioMode(!me.audioOnly)}
+							/>
+							:null
+						}
+						{debugInfo?						
+							<div
+								className={classnames('button', 'restart-ice', {
+									disabled : me.restartIceInProgress
+								})}
+								data-tip='Restart ICE'
+								data-type='dark'
+								onClick={() => onRestartIce()}
+							/>
+							:null
+						}
 						<div
-							className={classnames('button', 'audio-only', {
-								on       : me.audioOnly,
-								disabled : me.audioOnlyInProgress
-							})}
-							data-tip='Toggle audio only mode'
+							className={classnames('button', 'leave-meeting')}
+							data-tip='Leave meeting'
 							data-type='dark'
-							onClick={() => onSetAudioMode(!me.audioOnly)}
+							onClick={() => onLeaveMeeting()}
 						/>
-
-						<div
-							className={classnames('button', 'restart-ice', {
-								disabled : me.restartIceInProgress
-							})}
-							data-tip='Restart ICE'
-							data-type='dark'
-							onClick={() => onRestartIce()}
-						/>
-
 						<div
 							className={classnames('button', 'raise-hand', {
 								on       : me.raiseHand,
@@ -166,13 +181,6 @@ class Room extends React.Component
 							data-tip='Raise hand'
 							data-type='dark'
 							onClick={() => onToggleHand(!me.raiseHand)}
-						/>
-
-						<div
-							className={classnames('button', 'leave-meeting')}
-							data-tip='Leave meeting'
-							data-type='dark'
-							onClick={() => onLeaveMeeting()}
 						/>
 					</div>
 
@@ -199,8 +207,9 @@ Room.propTypes =
 	onShareScreen   : PropTypes.func.isRequired,
 	onUnShareScreen : PropTypes.func.isRequired,
 	onNeedExtension : PropTypes.func.isRequired,
-	onToggleHand 	  : PropTypes.func.isRequired,
-	onLeaveMeeting  : PropTypes.func.isRequired
+	onToggleHand    : PropTypes.func.isRequired,
+	onLeaveMeeting  : PropTypes.func.isRequired,
+	debugInfo       : PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) =>

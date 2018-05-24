@@ -1,0 +1,119 @@
+[data-component='OnePlusN'] {
+	min-height: 100%;
+	width: 100%;
+	height: 100%;
+
+	+desktop() {
+		width: 100%;
+		padding: 0px 0 0px 0;
+		justify-content: center;
+		align-items: center;
+		align-content: center;
+	}
+
+	+mobile() {
+		min-height: 100vh;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	> .active-speaker-container {
+		overflow: hidden;
+
+		AppearFadeIn(1000ms);
+
+		+desktop() {
+			flex: 0 0 auto;
+			//border: 1px solid rgba(#fff, 0.15);
+			//box-shadow: 0px 5px 12px 2px rgba(#111, 0.5);
+			transition-property: border-color;
+			transition-duration: 0.15s;			
+			//border-color: #fff;
+			
+		}
+
+		+mobile() {
+			flex: 100 100 auto;
+			order: 2;
+			min-height: 25vh;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;		
+			order: 1;
+		}
+	}
+	
+	> .audience-container::-webkit-scrollbar {
+			display: none;
+	}
+		> .audience-container::-moz-scrollbar{
+			display: none;
+	}
+
+	> .audience-container {
+		z-index: 2;
+		opacity: 0.8;
+		
+
+		AppearFadeIn(1000ms);
+
+		+desktop() {
+			display: flex;
+			flex-direction: column;
+			//align-content: flex-start;
+			justify-content: flex-start;
+			//align-items: flex-start;				
+			overflow-y: auto;
+			right: 4%;
+			top: 230px;
+			height: calc(100% - 270px);
+			width: 220px;			
+			position: absolute;			            
+		}
+
+		+mobile() {
+			flex: 100 100 auto;
+			order: 2;
+			min-height: 25vh;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;		
+			order: 1;
+		}
+
+		>.stamp-peer-container{
+			//overflow: hidden;			
+
+			AppearFadeIn(1000ms);
+
+			+desktop() {				
+				flex: 0 0 auto;
+				margin: 10px;				
+				border: 1px solid rgba(#fff, 0.15);				
+				box-shadow: 0px 5px 12px 2px rgba(#111, 0.5);
+				transition-property: border-color;
+				transition-duration: 0.15s;				
+			}
+
+			+mobile() {
+				flex: 100 100 auto;
+				order: 2;
+				max-height: 25vh;
+				//width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;					
+			}		
+		}
+
+	}
+
+}
