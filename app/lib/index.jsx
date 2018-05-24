@@ -78,8 +78,8 @@ function run()
 		? (urlParser.pathname).substr(1) : urlParser.query.roomId;
 	const produce = urlParser.query.produce !== 'false';
 	let displayName = urlParser.query.displayName;
-	const isSipEndpoint = urlParser.query.sipEndpoint === 'true';
-	const useSimulcast = urlParser.query.simulcast === 'true';
+	const isSipEndpoint = urlParser.query.sipEndpoint === 'true';	
+	const useSimulcast = urlParser.query.simulcast !== 'false';
 
 	if (!roomId)
 	{
