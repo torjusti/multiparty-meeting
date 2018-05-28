@@ -7,6 +7,7 @@ import { Appear } from './transitions';
 import Peer from './Peer';
 import Me from './Me';
 import Logger from '../Logger';
+import Draggable from 'react-draggable';
 
 class OnePlusN extends React.Component
 {
@@ -39,27 +40,29 @@ class OnePlusN extends React.Component
 		
 		return (
 			<div data-component='OnePlusN' ref='peers'>
-				<div className={classnames('audience-container')}>
-					{
-						peers.map((peer) =>
+				<Draggable>
+					<div className={classnames('audience-container')}>
 						{
-							if (peer.name !== activeSpeakerName)
+							peers.map((peer) =>
 							{
-								return (
-									<Appear key={peer.name} duration={1000}>
-										<div
-											className={classnames(
-												'stamp-peer-container'
-											)}
-										>
-											<Peer name={peer.name} />
-										</div>
-									</Appear>
-								);
-							} 
-						})
-					}
-				</div>
+								if (peer.name !== activeSpeakerName)
+								{
+									return (
+										<Appear key={peer.name} duration={1000}>
+											<div
+												className={classnames(
+													'stamp-peer-container'
+												)}
+											>
+												<Peer name={peer.name} />
+											</div>
+										</Appear>
+									);
+								} 
+							})
+						}
+					</div>
+				</Draggable>
 				<div className={classnames('active-speaker-container')} style={style} >
 					{
 
@@ -80,6 +83,7 @@ class OnePlusN extends React.Component
 				</div>
 				
 			</div>
+
 		);
 	}
 }
