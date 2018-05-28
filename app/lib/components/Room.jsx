@@ -13,6 +13,7 @@ import Notifications from './Notifications';
 import ChatWidget from './ChatWidget';
 import OnePlusN from './OnePlusN';
 import Draggable from 'react-draggable';
+
 class Room extends React.Component
 {
 	render()
@@ -101,8 +102,8 @@ class Room extends React.Component
 							</div>
 						</div>
 						:null
-					}
-					<OnePlusN />
+					}					
+					<OnePlusN />					
 					{/*	<Peers />	*/}
 
 					<Draggable>
