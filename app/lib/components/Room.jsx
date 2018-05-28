@@ -12,6 +12,7 @@ import Me from './Me';
 import Notifications from './Notifications';
 import ChatWidget from './ChatWidget';
 import OnePlusN from './OnePlusN';
+import Draggable from 'react-draggable';
 class Room extends React.Component
 {
 	render()
@@ -104,13 +105,15 @@ class Room extends React.Component
 					<OnePlusN />
 					{/*	<Peers />	*/}
 
-					<div
-						className={classnames('me-container', {
-							'active-speaker' : amActiveSpeaker
-						})}
-					>
-						<Me />
-					</div>
+					<Draggable>
+						<div
+							className={classnames('me-container', {
+								'active-speaker' : amActiveSpeaker
+							})}
+						>
+							<Me />
+						</div>
+					</Draggable>
 
 					<div className='topbar'>
 						<div
