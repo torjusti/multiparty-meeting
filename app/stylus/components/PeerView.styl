@@ -17,38 +17,12 @@
 
 		position: absolute;
 		z-index: 5
-		top: 0;
 		bottom: 0;
 		left: 0;
-		right: 0;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-
-		> .media {
-			flex: 0 0 auto;
-			display: flex;
-			flex-direction: row;
-
-			> .box {
-				margin: 4px;
-				padding: 2px 4px;
-				border-radius: 2px;
-				background-color: rgba(#000, 0.25);
-
-				> p {
-					user-select: none;
-					pointer-events: none;
-					margin-bottom: 2px;
-					color: rgba(#fff, 0.7);
-					font-size: 10px;
-
-					&:last-child {
-						margin-bottom: 0;
-					}
-				}
-			}
-		}
+		background-color: rgba(#000, 0.7);
 
 		> .peer {
 			flex: 0 0 auto;
@@ -58,24 +32,24 @@
 
 			+desktop() {
 				&.is-me {
-					padding: 10px;
+					padding: 3px;
 					align-items: flex-start;
 				}
 
 				&:not(.is-me) {
-					padding: 20px;
+					padding: 3px;
 					align-items: flex-start;
 				}
 			}
 
 			+mobile() {
 				&.is-me {
-					padding: 10px;
+					padding: 3px;
 					align-items: flex-start;
 				}
 
 				&:not(.is-me) {
-					padding: 10px;
+					padding: 3px;
 					align-items: flex-end;
 				}
 			}
@@ -112,57 +86,6 @@
 				border-bottom: 1px solid #aeff00;
 				background-color: transparent;
 			}
-
-			> .row {
-				margin-top: 4px;
-				display: flex;
-				flex-direction: row;
-				justify-content: flex-start;
-				align-items: flex-end;
-
-				> .device-icon {
-					height: 18px;
-					width: 18px;
-					margin-right: 3px;
-					user-select: none;
-					pointer-events: none;
-					background-position: center;
-					background-size: 100%;
-					background-repeat: no-repeat;
-					background-image: url('/resources/images/devices/unknown.svg');
-
-					&.chrome {
-						background-image: url('/resources/images/devices/chrome_16x16.png');
-					}
-
-					&.firefox {
-						background-image: url('/resources/images/devices/firefox_16x16.png');
-					}
-
-					&.safari {
-						background-image: url('/resources/images/devices/safari_16x16.png');
-					}
-
-					&.msedge {
-						background-image: url('/resources/images/devices/edge_16x16.png');
-					}
-
-					&.opera {
-						background-image: url('/resources/images/devices/opera_16x16.png');
-					}
-
-					&.sipendpoint {
-						background-image: url('/resources/images/devices/sip_endpoint.svg');
-					}
-				}
-
-				> .device-version {
-					user-select: none;
-					pointer-events: none;
-					font-size: 11px;
-					color: rgba(#fff, 0.55);
-				}
-			}
 		}
 	}
 
@@ -191,8 +114,8 @@
 	}
 
 	> .minivideo {
-		height: 15%;
-		width: 15%;
+		height: 40%;
+		width: 40%;
 		bottom: 1%;
 		right: 1%;
 		position: absolute;

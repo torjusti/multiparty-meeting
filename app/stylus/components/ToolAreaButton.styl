@@ -1,0 +1,52 @@
+[data-component='ToolAreaButton'] {
+	position: fixed;
+	z-index: 101;
+	top: 20px;
+	right: 20px;
+	height: 36px;
+	width: 36px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	> .button {
+		flex: 0 0 auto;
+		margin: 4px 0;
+		background-position: center;
+		background-size: 75%;
+		background-repeat: no-repeat;
+		background-color: rgba(#fff, 0.3);
+		cursor: pointer;
+		transition-property: opacity, background-color;
+		transition-duration: 0.15s;
+		border-radius: 100%;
+
+		+desktop() {
+			height: 36px;
+			width: 36px;
+		}
+
+		+mobile() {
+			height: 32px;
+			width: 32px;
+		}
+
+		&.on {
+			background-color: rgba(#fff, 0.7);
+		}
+
+		&.disabled {
+			pointer-events: none;
+			opacity: 0.5;
+		}
+
+		&.toolarea-button {
+			background-image: url('/resources/images/icon_tool_area_white.svg');
+
+			&.on {
+				background-image: url('/resources/images/icon_tool_area_black.svg');
+			}
+		}
+	}
+}

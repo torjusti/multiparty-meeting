@@ -1,0 +1,89 @@
+[data-component='SideBar'] {
+	position: fixed;
+	top: calc(50% - 60px);
+	height: 120px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	right: 20px;
+	width: 50px;
+
+	> .button {
+		flex: 0 0 auto;
+		margin: 4px 0;
+		background-position: center;
+		background-size: 75%;
+		background-repeat: no-repeat;
+		background-color: rgba(#fff, 0.3);
+		cursor: pointer;
+		transition-property: opacity, background-color;
+		transition-duration: 0.15s;
+		border-radius: 100%;
+
+		+desktop() {
+			height: 50px;
+			width: 50px;
+		}
+
+		+mobile() {
+			height: 50px;
+			width: 50px;
+		}
+
+		&.on {
+			background-color: rgba(#fff, 0.7);
+		}
+
+		&.disabled {
+			pointer-events: none;
+			opacity: 0.5;
+		}
+
+		&.audio-only {
+			background-image: url('/resources/images/icon_audio_only_white.svg');
+
+			&.on {
+				background-image: url('/resources/images/icon_audio_only_black.svg');
+			}
+		}
+
+		&.restart-ice {
+			background-image: url('/resources/images/icon_restart_ice_white.svg');
+
+			&.on {
+				background-image: url('/resources/images/icon_restart_ice__black.svg');
+			}
+		}
+
+		&.screen {
+			&.on {
+				background-image: url('/resources/images/no-share-screen-black.svg');
+			}
+
+			&.off {
+				background-image: url('/resources/images/share-screen-white.svg');
+			}
+
+			&.unsupported {
+				background-image: url('/resources/images/no-share-screen-white.svg');
+				background-color: rgba(#d42241, 0.7);
+			}
+
+			&.need-extension {
+				background-image: url('/resources/images/share-screen-extension.svg');
+			}
+		}
+		&.raise-hand {
+			background-image: url('/resources/images/icon-hand-white.svg');
+
+			&.on {
+				background-image: url('/resources/images/icon-hand-black.svg');
+			}
+		}
+
+		&.leave-meeting {
+			background-image: url('/resources/images/leave-meeting.svg');
+		}
+	}
+}

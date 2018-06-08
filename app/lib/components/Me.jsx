@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import { getDeviceInfo } from 'mediasoup-client';
 import * as appPropTypes from './appPropTypes';
 import * as requestActions from '../redux/requestActions';
+import Draggable from 'react-draggable';
 import PeerView from './PeerView';
 
 class Me extends React.Component
@@ -31,6 +32,7 @@ class Me extends React.Component
 			me,
 			micProducer,
 			webcamProducer,
+			screenProducer,
 			onChangeDisplayName,
 			onMuteMic,
 			onUnmuteMic,
@@ -72,69 +74,67 @@ class Me extends React.Component
 			!webcamProducer.remotelyPaused
 		);
 
+		const screenVisible = (
+			Boolean(screenProducer) &&
+			!screenProducer.locallyPaused &&
+			!screenProducer.remotelyPaused
+		);
+
 		let tip;
 
 		if (!me.displayNameSet)
 			tip = 'Click on your name to change it';
 
 		return (
-			<div
-				data-component='Me'
-				ref={(node) => (this._rootNode = node)}
-				data-tip={tip}
-				data-tip-disable={!tip}
-				data-type='dark'
-			>
-				{connected ?
-					<div className='controls'>
-						<div
-							className={classnames('button', 'mic', micState)}
-							onClick={() =>
-							{
-								micState === 'on' ? onMuteMic() : onUnmuteMic();
-							}}
-						/>
+			<Draggable handle='.me-handle' bounds='body'>
+				<div
+					data-component='Me'
+					ref={(node) => (this._rootNode = node)}
+					data-for='globaltip'
+					data-tip={tip}
+					data-tip-disable={!tip}
+					data-type='dark'
+				>
+					<div className='me-handle'>
+						<span>Me</span>
+						{connected ?
+							<div className='controls'>
+								<div
+									className={classnames('button', 'mic', micState)}
+									onClick={() =>
+									{
+										micState === 'on' ? onMuteMic() : onUnmuteMic();
+									}}
+								/>
 
-						<div
-							className={classnames('button', 'webcam', webcamState, {
-								disabled : me.webcamInProgress
-							})}
-							onClick={() =>
-							{
-								webcamState === 'on' ? onDisableWebcam() : onEnableWebcam();
-							}}
-						/>
-
-						<div
-							className={classnames('button', 'change-webcam', changeWebcamState, {
-								disabled : me.webcamInProgress
-							})}
-							onClick={() => onChangeWebcam()}
-						/>
+								<div
+									className={classnames('button', 'webcam', webcamState, {
+										disabled : me.webcamInProgress
+									})}
+									onClick={() =>
+									{
+										webcamState === 'on' ? onDisableWebcam() : onEnableWebcam();
+									}}
+								/>
+							</div>
+							:null
+						}
 					</div>
-					:null
-				}
 
-				<PeerView
-					isMe
-					peer={me}
-					audioTrack={micProducer ? micProducer.track : null}
-					videoTrack={webcamProducer ? webcamProducer.track : null}
-					videoVisible={videoVisible}
-					audioCodec={micProducer ? micProducer.codec : null}
-					videoCodec={webcamProducer ? webcamProducer.codec : null}
-					onChangeDisplayName={(displayName) => onChangeDisplayName(displayName)}
-				/>
-
-				{this._tooltip ?
-					<ReactTooltip
-						effect='solid'
-						delayShow={100}
-						delayHide={100}
+					<PeerView
+						isMe
+						peer={me}
+						audioTrack={micProducer ? micProducer.track : null}
+						videoTrack={webcamProducer ? webcamProducer.track : null}
+						screenTrack={screenProducer ? screenProducer.track : null}
+						videoVisible={videoVisible}
+						screenVisible={screenVisible}
+						audioCodec={micProducer ? micProducer.codec : null}
+						videoCodec={webcamProducer ? webcamProducer.codec : null}
+						onChangeDisplayName={(displayName) => onChangeDisplayName(displayName)}
 					/>
-					:null
-				}
-			</div>
+				</div>
+			</Draggable>
 		);
 	}
 
@@ -175,6 +175,7 @@ Me.propTypes =
 	me                  : appPropTypes.Me.isRequired,
 	micProducer         : appPropTypes.Producer,
 	webcamProducer      : appPropTypes.Producer,
+	screenProducer      : appPropTypes.Producer,
 	onChangeDisplayName : PropTypes.func.isRequired,
 	onMuteMic           : PropTypes.func.isRequired,
 	onUnmuteMic         : PropTypes.func.isRequired,
@@ -190,12 +191,15 @@ const mapStateToProps = (state) =>
 		producersArray.find((producer) => producer.source === 'mic');
 	const webcamProducer =
 		producersArray.find((producer) => producer.source === 'webcam');
+	const screenProducer =
+		producersArray.find((producer) => producer.source === 'screen');
 
 	return {
 		connected      : state.room.state === 'connected',
 		me             : state.me,
 		micProducer    : micProducer,
-		webcamProducer : webcamProducer
+		webcamProducer : webcamProducer,
+		screenProducer : screenProducer
 	};
 };
 

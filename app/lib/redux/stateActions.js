@@ -30,6 +30,14 @@ export const onComponentResize = (peerWidth, peerHeight) =>
 	};
 };
 
+export const onToggleVideoSpotlight = (peerName) =>
+{
+	return {
+		type    : 'SET_VIDEO_SPOTLIGHT',
+		payload : { peerName }
+	};
+};
+
 export const setMe = ({ peerName, displayName, displayNameSet, device }) =>
 {
 	return {
@@ -266,6 +274,13 @@ export const removeAllNotifications = () =>
 {
 	return {
 		type : 'REMOVE_ALL_NOTIFICATIONS'
+	};
+};
+
+export const toggleToolArea = () =>
+{
+	return {
+		type : 'TOGGLE_TOOL_AREA'
 	};
 };
 

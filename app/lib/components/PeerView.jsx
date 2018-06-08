@@ -14,11 +14,7 @@ export default class PeerView extends React.Component
 
 		this.state =
 		{
-			volume       : 0, // Integer from 0 to 10.,
-			videoWidth   : null,
-			videoHeight  : null,
-			screenWidth  : null,
-			screenHeight : null
+			volume : 0 // Integer from 0 to 10.,
 		};
 
 		// Latest received video track.
@@ -50,60 +46,16 @@ export default class PeerView extends React.Component
 			videoProfile,
 			screenVisible,
 			screenProfile,
-			audioCodec,
-			videoCodec,
-			screenCodec,
 			onChangeDisplayName
 		} = this.props;
 
 		const {
-			volume,
-			videoWidth,
-			videoHeight,
-			screenWidth,
-			screenHeight
+			volume
 		} = this.state;
 
 		return (
-			<div data-component='PeerView'>
+			<div data-component='PeerView' className={`level${volume}`}>
 				<div className='info'>
-					<div className={classnames('media', { 'is-me': isMe })}>
-						{screenVisible ?
-							<div className='box'>
-								{audioCodec ?
-									<p className='codec'>{audioCodec}</p>
-									:null
-								}
-
-								{screenCodec ?
-									<p className='codec'>{screenCodec} {screenProfile}</p>
-									:null
-								}
-
-								{(screenVisible && screenWidth !== null) ?
-									<p className='resolution'>{screenWidth}x{screenHeight}</p>
-									:null
-								}
-							</div>
-							:<div className='box'>
-								{audioCodec ?
-									<p className='codec'>{audioCodec}</p>
-									:null
-								}
-
-								{videoCodec ?
-									<p className='codec'>{videoCodec} {videoProfile}</p>
-									:null
-								}
-
-								{(videoVisible && videoWidth !== null) ?
-									<p className='resolution'>{videoWidth}x{videoHeight}</p>
-									:null
-								}
-							</div>
-						}
-					</div>
-
 					<div className={classnames('peer', { 'is-me': isMe })}>
 						{isMe ?
 							<EditableInput
@@ -114,7 +66,7 @@ export default class PeerView extends React.Component
 								classInvalid='invalid'
 								shouldBlockWhileLoading
 								editProps={{
-									maxLength   : 20,
+									maxLength   : 30,
 									autoCorrect : false,
 									spellCheck  : false
 								}}
@@ -125,15 +77,6 @@ export default class PeerView extends React.Component
 								{peer.displayName}
 							</span>
 						}
-
-						<div className='row'>
-							<span
-								className={classnames('device-icon', peer.device.flag)}
-							/>
-							<span className='device-version'>
-								{peer.device.name} {Math.floor(peer.device.version) || null}
-							</span>
-						</div>
 					</div>
 				</div>
 
@@ -148,21 +91,18 @@ export default class PeerView extends React.Component
 					muted={isMe}
 				/>
 
-				{screenVisible ?
-					<div className='minivideo'>
-						<video
-							ref='minivideo'
-							className={classnames({
-								hidden  : !videoVisible,
-								'is-me' : isMe,
-								loading : videoProfile === 'none'
-							})}
-							autoPlay
-							muted={isMe}
-						/>
-					</div>
-					:null
-				}
+				<div className={classnames('minivideo', { hidden: !screenVisible })}>
+					<video
+						ref='minivideo'
+						className={classnames({
+							hidden  : !screenVisible,
+							'is-me' : isMe,
+							loading : videoProfile === 'none'
+						})}
+						autoPlay
+						muted={isMe}
+					/>
+				</div>
 
 				<div className='volume-container'>
 					<div className={classnames('bar', `level${volume}`)} />
@@ -315,10 +255,7 @@ PeerView.propTypes =
 	screenTrack         : PropTypes.any,
 	videoVisible        : PropTypes.bool.isRequired,
 	videoProfile        : PropTypes.string,
-	screenVisible       : PropTypes.bool.isRequired,
+	screenVisible       : PropTypes.bool,
 	screenProfile       : PropTypes.string,
-	audioCodec          : PropTypes.string,
-	videoCodec          : PropTypes.string,
-	screenCodec         : PropTypes.string,
 	onChangeDisplayName : PropTypes.func
 };
