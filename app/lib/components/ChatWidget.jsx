@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import * as stateActions from '../redux/stateActions';
 import * as requestActions from '../redux/requestActions';
 import MessageList from './Chat/MessageList';
@@ -44,7 +45,7 @@ class ChatWidget extends Component
 				}
 				{
 					<div
-						className='launcher'
+						className={classnames('launcher', { on: showChat })}
 						data-type='dark'
 						data-tip='Show room chat'
 						onClick={onToggleChat}
