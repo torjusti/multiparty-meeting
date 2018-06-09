@@ -291,7 +291,6 @@ class Room extends EventEmitter
 					const { mediaPeer } = protooPeer.data;
 
 					mediaPeer.appData.raiseHand = request.data.raiseHandState;
-
 					// Spread to others via protoo.
 					this._protooRoom.spread(
 						'raisehand-message',
