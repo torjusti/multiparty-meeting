@@ -82,14 +82,6 @@ const Peer = (props) =>
 					<div className='icon raise-hand' />
 					:null
 				}
-				{!micEnabled ?
-					<div className='icon mic-off' />
-					:null
-				}
-				{!videoVisible ?
-					<div className='icon webcam-off' />
-					:null
-				}
 			</div>
 
 			{videoVisible && !webcamConsumer.supported ?
