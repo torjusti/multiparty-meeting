@@ -8,6 +8,7 @@ const config = require('../config');
 const MAX_BITRATE = config.mediasoup.maxBitrate || 1000000;
 const MIN_BITRATE = Math.min(50000, MAX_BITRATE);
 const BITRATE_FACTOR = 0.75;
+const MAX_SPEAKERS = 10;
 
 const logger = new Logger('Room');
 
@@ -27,6 +28,8 @@ class Room extends EventEmitter
 		this._closed = false;
 
 		this._chatHistory = [];
+
+		this._lastN = [];
 
 		try
 		{
@@ -122,6 +125,23 @@ class Room extends EventEmitter
 				logger.info('new active speaker [peerName:"%s"]', activePeer.name);
 
 				this._currentActiveSpeaker = activePeer;
+
+				const index = this._lastN.indexOf(activePeer.name);
+
+				if (index > -1) // We have this speaker in the list, move to front
+				{
+					this._lastN.splice(index, 1);
+					this._lastN = [activePeer.name].concat(this._lastN);
+				}
+				else // We don't have this speaker in the list, push to front
+				{
+					if (this._lastN.length === MAX_SPEAKERS) // List is full, pop out last
+					{
+						this._lastN.pop();
+					}
+
+					this._lastN = [activePeer.name].concat(this._lastN);
+				}
 
 				const activeVideoProducer = activePeer.producers
 					.find((producer) => producer.kind === 'video');
@@ -248,13 +268,16 @@ class Room extends EventEmitter
 					break;
 				}
 
-				case 'chat-history':
+				case 'room-data':
 				{
 					accept();
 
 					protooPeer.send(
-						'chat-history-receive',
-						{ chatHistory: this._chatHistory }
+						'room-data-receive',
+						{
+							lastN       : this._lastN,
+							chatHistory : this._chatHistory
+						}
 					);
 
 					break;
@@ -273,7 +296,7 @@ class Room extends EventEmitter
 					this._protooRoom.spread(
 						'raisehand-message',
 						{
-							peerName    : protooPeer.id,
+							peerName       : protooPeer.id,
 							raiseHandState : raiseHandState
 						},
 						[ protooPeer ]);

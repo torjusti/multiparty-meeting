@@ -15,7 +15,8 @@ const ROOM_OPTIONS =
 	transportOptions :
 	{
 		tcp : true
-	}
+	},
+	lastN : 3
 };
 
 const VIDEO_CONSTRAINS =
@@ -84,6 +85,9 @@ export default class RoomClient
 			device     : null,
 			resolution : 'hd'
 		};
+
+		// LastN speaker array
+		this._lastN = [];
 
 		this._screenSharing = ScreenShare.create();
 
@@ -162,14 +166,14 @@ export default class RoomClient
 			});
 	}
 
-	getChatHistory()
+	getRoomData()
 	{
-		logger.debug('getChatHistory()');
+		logger.debug('getRoomData()');
 
-		return this._protoo.send('chat-history', {})
+		return this._protoo.send('room-data', {})
 			.catch((error) =>
 			{
-				logger.error('getChatHistory() | failed: %o', error);
+				logger.error('getRoomData() | failed: %o', error);
 
 				this._dispatch(requestActions.notify(
 					{
@@ -587,6 +591,47 @@ export default class RoomClient
 			});
 	}
 
+	handleActiveSpeaker(peerName)
+	{
+		logger.debug('handleActiveSpeaker() [peerName:"%s"]', peerName);
+
+		const index = this._lastN.indexOf(peerName);
+
+		if (index > -1) // We have this speaker in the list, move to front
+		{
+			this._lastN.splice(index, 1);
+			this._lastN = [ peerName ].concat(this._lastN);
+		}
+		else // We don't have this speaker in the list, push to front
+		{
+			if (this._lastN.length === ROOM_OPTIONS.lastN) // List is full, pop out last
+			{
+				const notSpeaker = this._lastN.pop();
+
+				const peer = this._room.getPeerByName(notSpeaker);
+
+				for (const consumer of peer.consumers)
+				{
+					if (consumer.kind !== 'video')
+						continue;
+					consumer.pause('not-speaking');
+				}
+			}
+
+			this._lastN = [ peerName ].concat(this._lastN);
+
+			const peer = this._room.getPeerByName(peerName);
+
+			for (const consumer of peer.consumers)
+			{
+				if (consumer.kind !== 'video' || !consumer.supported)
+					continue;
+
+				consumer.resume();
+			}
+		}
+	}
+
 	sendRaiseHandState(state)
 	{
 		logger.debug('sendRaiseHandState: ', state);
@@ -715,8 +760,12 @@ export default class RoomClient
 
 					const { peerName } = request.data;
 
-					this._dispatch(
-						stateActions.setRoomActiveSpeaker(peerName));
+					if (peerName !== this._peerName)
+					{
+						// this.handleActiveSpeaker(peerName);
+						this._dispatch(
+							stateActions.setRoomActiveSpeaker(peerName));
+					}
 
 					break;
 				}
@@ -776,17 +825,26 @@ export default class RoomClient
 					break;
 				}
 
-				case 'chat-history-receive':
+				case 'room-data-receive':
 				{
 					accept();
 
-					const { chatHistory } = request.data;
+					const { chatHistory, lastN } = request.data;
 
 					if (chatHistory.length > 0)
 					{
 						logger.debug('Got chat history');
 						this._dispatch(
 							stateActions.addChatHistory(chatHistory));
+					}
+
+					if (lastN.length > 0)
+					{
+						logger.debug('Got lastN list');
+						this._lastN = lastN;
+
+						(lastN.length > ROOM_OPTIONS.lastN) &&
+							(this._lastN.length = ROOM_OPTIONS.lastN);
 					}
 
 					break;
@@ -928,7 +986,7 @@ export default class RoomClient
 				// Clean all the existing notifcations.
 				this._dispatch(stateActions.removeAllNotifications());
 
-				this.getChatHistory();
+				this.getRoomData();
 
 				this._dispatch(requestActions.notify(
 					{
@@ -1122,8 +1180,17 @@ export default class RoomClient
 					logger.debug(
 						'webcam Producer "close" event [originator:%s]', originator);
 
-					this._screenSharingProducer = null;
 					this._dispatch(stateActions.removeProducer(producer.id));
+					this.disableScreenSharing();
+				});
+
+				producer.on('trackended', (originator) =>
+				{
+					logger.debug(
+						'webcam Producer "trackended" event [originator:%s]', originator);
+
+					this._dispatch(stateActions.removeProducer(producer.id));
+					this.disableScreenSharing();
 				});
 
 				producer.on('pause', (originator) =>
