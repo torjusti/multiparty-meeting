@@ -151,23 +151,10 @@ const mapStateToProps = (state, { name }) =>
 const mapDispatchToProps = (dispatch) =>
 {
 	return {
-		onMuteMic : (peerName) =>
-		{
-			dispatch(requestActions.mutePeerAudio(peerName));
-		},
-		onUnmuteMic : (peerName) =>
-		{
-			dispatch(requestActions.unmutePeerAudio(peerName));
-		},
-		onEnableWebcam : (peerName) =>
-		{
-			
-			dispatch(requestActions.resumePeerVideo(peerName));
-		},
-		onDisableWebcam : (peerName) =>
-		{
-			dispatch(requestActions.pausePeerVideo(peerName));
-		}
+		onMuteMic : (peerName) => dispatch(requestActions.mutePeerAudio(peerName)),
+		onUnmuteMic : (peerName) => dispatch(requestActions.unmutePeerAudio(peerName)),
+		onEnableWebcam : (peerName) => dispatch(requestActions.resumePeerVideo(peerName)),
+		onDisableWebcam : (peerName) => dispatch(requestActions.pausePeerVideo(peerName))
 	};
 };
 
