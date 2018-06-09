@@ -527,6 +527,150 @@ export default class RoomClient
 			});
 	}
 
+	mutePeerAudio(peerName)
+	{
+		logger.debug('mutePeerAudio() [peerName:"%s"]', peerName);
+
+		this._dispatch(
+			stateActions.setPeerAudioInProgress(peerName, true));
+
+		return Promise.resolve()
+			.then(() =>
+			{
+				for (const peer of this._room.peers)
+				{
+					if (peer.name === peerName)
+					{
+						for (const consumer of peer.consumers)
+						{
+							if (consumer.kind !== 'audio')
+								continue;
+
+							consumer.pause('mute-audio');
+						}
+					}
+				}
+
+				this._dispatch(
+					stateActions.setPeerAudioInProgress(peerName, false));
+			})
+			.catch((error) =>
+			{
+				logger.error('mutePeerAudio() failed: %o', error);
+
+				this._dispatch(
+					stateActions.setPeerAudioInProgress(peerName, false));
+			});
+	}
+
+	unmutePeerAudio(peerName)
+	{
+		logger.debug('unmutePeerAudio() [peerName:"%s"]', peerName);
+
+		this._dispatch(
+			stateActions.setPeerAudioInProgress(peerName, true));
+
+		return Promise.resolve()
+			.then(() =>
+			{
+				for (const peer of this._room.peers)
+				{
+					if (peer.name === peerName)
+					{
+						for (const consumer of peer.consumers)
+						{
+							if (consumer.kind !== 'audio' || !consumer.supported)
+								continue;
+
+							consumer.resume();
+						}
+					}
+				}
+
+				this._dispatch(
+					stateActions.setPeerAudioInProgress(peerName, false));
+			})
+			.catch((error) =>
+			{
+				logger.error('unmutePeerAudio() failed: %o', error);
+
+				this._dispatch(
+					stateActions.setPeerAudioInProgress(peerName, false));
+			});
+	}
+
+	pausePeerVideo(peerName)
+	{
+		logger.debug('pausePeerVideo() [peerName:"%s"]', peerName);
+
+		this._dispatch(
+			stateActions.setPeerVideoInProgress(peerName, true));
+
+		return Promise.resolve()
+			.then(() =>
+			{
+				for (const peer of this._room.peers)
+				{
+					if (peer.name === peerName)
+					{
+						for (const consumer of peer.consumers)
+						{
+							if (consumer.kind !== 'video')
+								continue;
+
+							consumer.pause('pause-video');
+						}
+					}
+				}
+
+				this._dispatch(
+					stateActions.setPeerVideoInProgress(peerName, false));
+			})
+			.catch((error) =>
+			{
+				logger.error('pausePeerVideo() failed: %o', error);
+
+				this._dispatch(
+					stateActions.setPeerVideoInProgress(peerName, false));
+			});
+	}
+
+	resumePeerVideo(peerName)
+	{
+		logger.debug('resumePeerVideo() [peerName:"%s"]', peerName);
+
+		this._dispatch(
+			stateActions.setPeerVideoInProgress(peerName, true));
+
+		return Promise.resolve()
+			.then(() =>
+			{
+				for (const peer of this._room.peers)
+				{
+					if (peer.name === peerName)
+					{
+						for (const consumer of peer.consumers)
+						{
+							if (consumer.kind !== 'video' || !consumer.supported)
+								continue;
+
+							consumer.resume();
+						}
+					}
+				}
+
+				this._dispatch(
+					stateActions.setPeerVideoInProgress(peerName, false));
+			})
+			.catch((error) =>
+			{
+				logger.error('resumePeerVideo() failed: %o', error);
+
+				this._dispatch(
+					stateActions.setPeerVideoInProgress(peerName, false));
+			});
+	}
+
 	enableAudioOnly()
 	{
 		logger.debug('enableAudioOnly()');
@@ -655,7 +799,7 @@ export default class RoomClient
 		this._dispatch(
 			stateActions.setMyRaiseHandStateInProgress(true));
 
-		return this._protoo.send('raisehand-message', { raiseHandState: state })
+		return this._protoo.send('raisehand-message', { peerName: this._peerName, raiseHandState: state })
 			.then(() =>
 			{
 				this._dispatch(
@@ -663,7 +807,7 @@ export default class RoomClient
 
 				this._dispatch(requestActions.notify(
 					{
-						text : 'raiseHand state changed'
+						text : `You ${state ? 'raised' : 'lowered'} your hand`
 					}));
 				this._dispatch(
 					stateActions.setMyRaiseHandStateInProgress(false));
@@ -675,7 +819,7 @@ export default class RoomClient
 				this._dispatch(requestActions.notify(
 					{
 						type : 'error',
-						text : `Could not change raise hand state: ${error}`
+						text : `Could not ${state ? 'raise' : 'lower'} your hand: ${error}`
 					}));
 
 				// We need to refresh the component for it to render changed state
@@ -853,6 +997,12 @@ export default class RoomClient
 
 					this._dispatch(
 						stateActions.setPeerRaiseHandState(peerName, raiseHandState));
+
+					this._dispatch(requestActions.notify(
+						{
+							text : `${peerName} ${raiseHandState ? 'raised' : 'lowered'} their hand`
+						}));
+
 					break;
 				}
 
